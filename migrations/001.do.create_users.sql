@@ -8,6 +8,5 @@ CREATE TABLE users (
     state TEXT NOT NULL,
     city TEXT NOT NULL,
     email TEXT NOT NULL,
-    occupation TEXT,
-    interests TEXT
+    occupation TEXT
 );

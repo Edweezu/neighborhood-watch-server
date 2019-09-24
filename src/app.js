@@ -5,6 +5,7 @@ const cors = require('cors')
 const helmet = require('helmet')
 const NODE_ENV = require('./config').NODE_ENV
 const ErrorHandler = require('./errorhandler')
+const UsersRouter = require('./users/users-router')
 
 
 
@@ -19,6 +20,8 @@ app.use(helmet({hidePoweredBy: {setTo: 'bye'}}));
 app.get('/', (req, res) => {
     res.send('Hello world!')
 })
+
+app.use('/api/users', UsersRouter)
 
 app.use(ErrorHandler)
 
