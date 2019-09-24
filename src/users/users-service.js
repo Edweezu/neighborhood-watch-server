@@ -1,8 +1,20 @@
 const bcrypt = require('bcryptjs')
 const xss = require('xss')
 const REGEX_UPPER_LOWER_NUMBER_SPECIAL = /(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&])[\S]+/
+const jwt = require('jsonwebtoken')
+const config = require('../config')
 
 const UsersService = {
+
+    getUserWithUserName(db, username) {
+        return db('users')
+          .where({ username })
+          .first()
+    },
+
+    comparePasswords(password, hash) {
+        return bcrypt.compare(password, hash)
+    },    
     
     checkIfUserExists (username , db) {
         return db('users')
@@ -10,6 +22,19 @@ const UsersService = {
         .first()
         .then(user => !!user)
     },
+
+    createJwt(subject, payload) {
+        //returns json web token as string
+        //payload = data thats stored inside the JWT
+        return jwt.sign(payload, config.JWT_SECRET, {
+          subject,
+          expiresIn: config.JWT_EXPIRY,
+          algorithm: 'HS256',
+          //how the signature should be computed
+        })
+    },
+    
+
 
     validatePassword (password) {
         if (password.length < 8) {

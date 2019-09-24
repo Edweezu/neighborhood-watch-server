@@ -8,8 +8,45 @@ const UsersService = require('./users-service')
 UsersRouter
     .route('/login')
     .post(jsonParser, (req, res, next) => {
-        
-    })
+        const { username, password } = req.body
+        const loginUser = {
+            username: username.toLowerCase(),
+            password: password
+        }
+
+        const db = req.app.get('db')
+        for (let key in loginUser) {
+            if (!loginUser[key]) {
+                return res.status(400).json(`Missing ${key} in request body`)
+            }
+        }
+
+        UsersService.getUserWithUserName(
+            db,
+            loginUser.username
+        )
+        .then(dbUser => {
+            if (!dbUser ) {
+                return res.status(400).json(`Incorrect user_name or password`)
+            }
+
+            return UsersService.comparePassword (loginUser.password, dbUser.password)
+                .then(compareMatch => {
+                    if (!compareMatch) {
+                        return res.status(400).json(`Incorrect username or password`)
+                    }
+
+                    let sub = dbUser.username
+                    let payload = { user_id: dbUser.id}
+                    res.send({
+                        authToken: UsersService.createJwt(sub, payload)
+                    })
+                })
+        })
+        .catch(next)
+
+        })
+    
 
 
 
