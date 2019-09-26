@@ -34,7 +34,12 @@ const UsersService = {
         })
     },
     
-
+    verifyJwt(token) {
+         //returns payload decoded if correct token, if not throws error
+         return jwt.verify(token, config.JWT_SECRET, {
+             algorithms: ['HS256']
+         })
+    },
 
     validatePassword (password) {
         if (password.length < 8) {
@@ -71,6 +76,17 @@ const UsersService = {
             id: user.id,
             username: xss(user.username)
         }
+    },
+
+    updateUser (db, userId, info) {
+        return db
+            .from('users')
+            .where('id', userId)
+            .update(info)
+            .returning('*')
+            .then(rows => {
+                return rows[0]
+            })
     }
 }
 

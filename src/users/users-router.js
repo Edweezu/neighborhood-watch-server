@@ -3,6 +3,7 @@ const path = require('path')
 const UsersRouter = express.Router()
 const jsonParser = express.json()
 const UsersService = require('./users-service')
+const xss = require('xss')
 
 
 UsersRouter
@@ -46,7 +47,44 @@ UsersRouter
         .catch(next)
 
         })
-    
+
+
+UsersRouter
+    .route('/register/:userid')
+    .patch(jsonParser, (req, res, next) => {
+        let db = req.app.get('db')
+        let { first_name, last_name, email, country, state, cityinput } = req.body
+        let { userid } = req.params
+
+        let updatedUser = {
+            first_name,
+            email,
+            country,
+            state, 
+            cityinput
+        }
+
+        for (let item in updatedUser) {
+            if (!updatedUser[item]) {
+                return res.status(400).json(`Please provide the field ${item}`)
+            }
+        }
+
+        updatedUser.last_name = last_name
+
+        return UsersService.updateUser(db, userid, updatedUser)
+            .then(user => {
+                // return res.status(204).end()
+                // return res.status(200).json(user)
+                    let sub = user.username
+                    let payload = { user_id: user.id}
+                    res.send({
+                        authToken: UsersService.createJwt(sub, payload)
+                    })
+            })
+            .catch(next)
+
+    })
 
 
 
@@ -89,11 +127,12 @@ UsersRouter
                         //return res json to the user
                         return UsersService.insertUser (newUser, db)
                             .then(insertedUser => {
+                                console.log('inserted', insertedUser)
                                 res
                                     .status(201)
                                     //messed up this
                                     .location(path.posix.join(req.originalUrl, `/${insertedUser.id}`))
-                                    .json(UsersService.serializeUser(newUser))
+                                    .json(UsersService.serializeUser(insertedUser))
                             })  
                     })
             })
