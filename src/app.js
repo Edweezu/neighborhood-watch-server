@@ -6,6 +6,8 @@ const helmet = require('helmet')
 const NODE_ENV = require('./config').NODE_ENV
 const ErrorHandler = require('./errorhandler')
 const UsersRouter = require('./users/users-router')
+const PostsRouter = require('./posts/posts-router')
+const PlacesRouter = require('./places/places-router')
 
 
 
@@ -22,6 +24,8 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/users', UsersRouter)
+app.use('/api/posts', PostsRouter)
+app.use('/api/places', PlacesRouter)
 
 app.use(ErrorHandler)
 

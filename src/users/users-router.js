@@ -4,6 +4,7 @@ const UsersRouter = express.Router()
 const jsonParser = express.json()
 const UsersService = require('./users-service')
 const xss = require('xss')
+const requireAuth = require('../middleware/jwt-auth')
 
 
 UsersRouter
@@ -31,16 +32,16 @@ UsersRouter
                 return res.status(400).json(`Incorrect user_name or password`)
             }
 
-            return UsersService.comparePassword (loginUser.password, dbUser.password)
+            return UsersService.comparePasswords (loginUser.password, dbUser.password)
                 .then(compareMatch => {
                     if (!compareMatch) {
                         return res.status(400).json(`Incorrect username or password`)
                     }
 
-                    let sub = dbUser.username
-                    let payload = { user_id: dbUser.id}
+                    const payload = { user_id: dbUser.id, sub: dbUser.username}
+
                     res.send({
-                        authToken: UsersService.createJwt(sub, payload)
+                        authToken: UsersService.createJwt(payload)
                     })
                 })
         })
@@ -76,10 +77,10 @@ UsersRouter
             .then(user => {
                 // return res.status(204).end()
                 // return res.status(200).json(user)
-                    let sub = user.username
-                    let payload = { user_id: user.id}
+                    const payload = { user_id: user.id, sub: user.username}
+
                     res.send({
-                        authToken: UsersService.createJwt(sub, payload)
+                        authToken: UsersService.createJwt(payload)
                     })
             })
             .catch(next)
@@ -144,6 +145,13 @@ UsersRouter
 
 UsersRouter
     .route('/refresh')
+    .post(requireAuth, (req, res,) => {
+        // const sub = req.user.username
+        const payload = { user_id: req.user.id, sub: req.user.username }
+        res.send({
+            authToken: UsersService.createJwt(payload),
+        })
+    })
 
 
 

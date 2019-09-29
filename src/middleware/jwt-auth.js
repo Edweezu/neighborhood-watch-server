@@ -23,7 +23,8 @@ function requireAuth (req, res, next) {
         .then(user => {
             if (!user) {
                 return res.status(401).json({
-                    error: 'Unauthorized request'
+                    // error: 'Unauthorized request'
+                    error: 'Incorrect username - jwtAuth'
                 })    
             }
             //attaching the returned user onto the req object which can be used in the next route path 
@@ -42,3 +43,6 @@ function requireAuth (req, res, next) {
 }
 
 module.exports = requireAuth
+
+
+

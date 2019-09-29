@@ -23,11 +23,10 @@ const UsersService = {
         .then(user => !!user)
     },
 
-    createJwt(subject, payload) {
+    createJwt(payload) {
         //returns json web token as string
         //payload = data thats stored inside the JWT
         return jwt.sign(payload, config.JWT_SECRET, {
-          subject,
           expiresIn: config.JWT_EXPIRY,
           algorithm: 'HS256',
           //how the signature should be computed

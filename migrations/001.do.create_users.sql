@@ -6,7 +6,7 @@ CREATE TABLE users (
     last_name TEXT,
     country TEXT,
     state TEXT,
-    cityinput TEXT,
+    city TEXT,
     email TEXT,
     occupation TEXT
 );
