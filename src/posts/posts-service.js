@@ -11,6 +11,12 @@ const PostService = {
             })
     },
 
+    getAllPosts (db) {
+        return db
+            .select('*')
+            .from('posts')
+    },
+
     serializePost (post) {
         return {
             id: post.id,

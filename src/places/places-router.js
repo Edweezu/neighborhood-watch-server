@@ -8,6 +8,16 @@ const path = require('path')
 PlacesRouter
     .route('/')
     .all(requireAuth)
+    .get((req, res, next) => {
+        let db = req.app.get('db')
+
+        return PlacesService.getAllPlaces(db)
+            .then(places => {
+                return res.json(places.map(place => {
+                    return PlacesService.serializeNewPlace(place)
+                }))
+            })
+    })
     .post(jsonParser, (req, res, next) => {
         let db = req.app.get('db')
         let { country, state, city } = req.body

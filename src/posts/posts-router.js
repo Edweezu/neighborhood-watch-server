@@ -8,6 +8,16 @@ const path = require('path')
 PostsRouter
     .route('/')
     .all(requireAuth)
+    .get((req, res, next) => {
+        let db = req.app.get('db')
+
+        return PostService.getAllPosts(db)
+            .then(posts => {
+                return res.json(posts.map(post => {
+                    return PostService.serializePost(post)
+                }))
+            })
+    })
     .post(jsonParser, (req, res, next) => {
         let db = req.app.get('db')
         let { subject, message, post_category, date_created } = req.body

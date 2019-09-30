@@ -8,6 +8,7 @@ const ErrorHandler = require('./errorhandler')
 const UsersRouter = require('./users/users-router')
 const PostsRouter = require('./posts/posts-router')
 const PlacesRouter = require('./places/places-router')
+const CommentsRouter = require('./comments/comments-router')
 
 
 
@@ -26,6 +27,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', UsersRouter)
 app.use('/api/posts', PostsRouter)
 app.use('/api/places', PlacesRouter)
+app.use('/api/comments', CommentsRouter)
 
 app.use(ErrorHandler)
 

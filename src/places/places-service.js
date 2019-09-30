@@ -18,6 +18,12 @@ const PlacesService = {
             state: xss(place.state),
             city: xss(place.city),
         }
+    },
+
+    getAllPlaces (db) {
+        return db
+            .select('*')
+            .from('places')
     }
 }
 
