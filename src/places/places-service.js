@@ -11,6 +11,17 @@ const PlacesService = {
             })
     },
 
+    findPlace (db, body) {
+        return db
+            .from('places')
+            .where({
+                country: body.country,
+                state: body.state,
+                city: body.city
+            })
+
+    },
+
     serializeNewPlace (place) {
         return {
             id: place.id,

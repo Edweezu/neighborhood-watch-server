@@ -33,16 +33,36 @@ PlacesRouter
             }
         }
 
-        return PlacesService.postNewPlace (db, newPlace)
-            .then(place => {
-                return res
-                    .status(201)
-                    .location(path.posix.join(req.originalUrl, `/${place.id}`))
-                    .json(PlacesService.serializeNewPlace(place))
+        console.log('new place', newPlace)
 
-            })
+        let findCity = (db, newPlace) => {
+            return PlacesService.findPlace(db, newPlace)
+                .then(res => {
+                    return res
+                })
+        }
+       
+        return PlacesService.findPlace(db, newPlace)
+            .then(findPlace => {
+                if (!findPlace.length) {
+                    return PlacesService.postNewPlace (db, newPlace)
+                    .then(place => {
+                        return res
+                            .status(201)
+                            .location(path.posix.join(req.originalUrl, `/${place.id}`))
+                            .json(PlacesService.serializeNewPlace(place))
+        
+                    })
+                }
 
+                return res.status(200).json({
+                    id: 99999999,
+                    text: 'Page already exists'
+                })
+            })      
     })
 
 
 module.exports = PlacesRouter
+
+
