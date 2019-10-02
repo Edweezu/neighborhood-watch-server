@@ -35,12 +35,6 @@ PlacesRouter
 
         console.log('new place', newPlace)
 
-        let findCity = (db, newPlace) => {
-            return PlacesService.findPlace(db, newPlace)
-                .then(res => {
-                    return res
-                })
-        }
        
         return PlacesService.findPlace(db, newPlace)
             .then(findPlace => {
