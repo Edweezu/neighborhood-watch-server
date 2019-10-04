@@ -49,6 +49,22 @@ const PostService = {
             .groupBy('posts.id', 'users.id')
     },
 
+    //returning is only for update and add methods
+    getPostById (db, postid) {
+        return db
+            .select('*')
+            .from('posts')
+            .where('id', postid)
+            .first()
+    },
+
+    deletePost (db, postid) {
+        return db
+            .from('posts')
+            .where('id', postid)
+            .del()
+    },
+
     serializePost (post) {
         return {
             id: post.id,
