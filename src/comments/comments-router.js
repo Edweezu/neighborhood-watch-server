@@ -44,6 +44,28 @@ CommentsRouter
 
     })
 
+CommentsRouter
+    .route('/:commentId')
+    .all(requireAuth)
+    .delete((req, res, next) => {
+        let db = req.app.get('db')
+        let { commentId } = req.params
+
+        return CommentsService.getById (db, commentId)
+            .then(comment => {
+                if (!comment) {
+                    return res.status(400).send(`Please provide a valid comment`)
+                }
+
+                return CommentsService.deleteComment(db, commentId)
+                    .then(data => {
+                        return res.status(204).end()
+                    })
+                    .catch(next)
+            })
+            .catch(next)
+    })
+
 
 
 module.exports = CommentsRouter

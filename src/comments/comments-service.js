@@ -78,6 +78,13 @@ const CommentsService = {
         }
     },
 
+    deleteComment(db, id) {
+        return db
+            .from('comments')
+            .where('id', id)
+            .del()
+    },
+
     postNewComment (db, newComment) {
         return db
             .from('comments')
