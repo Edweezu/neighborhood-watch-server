@@ -9,6 +9,9 @@ const PostService = {
             .then(rows => {
                 return rows[0]
             })
+            .then(post => {
+                return PostService.getById(db, post.id)
+            })
     },
 
     getAllPosts (db) {
@@ -65,6 +68,35 @@ const PostService = {
             .del()
     },
 
+    getById(db, id) {
+        return db
+          .from('posts')
+          .select(
+            'posts.*',
+            db.raw(
+              `json_strip_nulls(
+                    json_build_object (
+                        'id', users.id,
+                        'username', users.username,
+                        'first_name', users.first_name,
+                        'last_name', users.last_name,
+                        'country', users.country,
+                        'state', users.state,
+                        'city', users.city,
+                        'email', users.email
+                    )
+                ) AS "user"`
+            )
+          )
+          .leftJoin(
+            'users',
+            'posts.user_id',
+            'users.id',
+          )
+          .where('posts.id', id)
+          .first()
+      },
+
     serializePost (post) {
         return {
             id: post.id,
@@ -74,6 +106,7 @@ const PostService = {
             date_created: xss(post.date_created),
             place_id: post.place_id,
             user_id: post.user_id,
+            image: post.image,
             user: {
                 id: post.user.id,
                 username: xss(post.user.username),

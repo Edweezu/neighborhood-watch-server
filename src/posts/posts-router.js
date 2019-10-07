@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const PostsRouter = express.Router()
 const jsonParser = express.json()
@@ -5,6 +6,17 @@ const requireAuth = require('../middleware/jwt-auth')
 const PostService = require('./posts-service')
 const path = require('path')
 const logger = require('../logger')
+// const cloudinary = require('cloudinary')
+const { multerUploads, dataUri } = require('../middleware/multerUploads')
+const { uploader, cloudinaryConfig } = require('../cloudinaryConfig')
+
+
+// cloudinary.config({ 
+//     cloud_name: process.env.CLOUD_NAME, 
+//     api_key: process.env.API_KEY, 
+//     api_secret: process.env.API_SECRET
+// })
+
 
 PostsRouter
     .route('/')
@@ -19,15 +31,22 @@ PostsRouter
                 }))
             })
     })
-    .post(jsonParser, (req, res, next) => {
+    .post(multerUploads, (req, res, next) => {
+
+        console.log('req files', req.file)
+        console.log('req body', req.body)
         let db = req.app.get('db')
-        let { subject, message, post_category, date_created } = req.body
+        let { subject, message, post_category, place_id } = req.body
+
         let newPost = {
             subject,
             message,
             post_category,
-            date_created
+            date_created: JSON.stringify(new Date()),
+            place_id
         }
+
+        console.log('new post', newPost)
 
         for (let item in newPost) {
             if (!newPost[item]) {
@@ -38,14 +57,37 @@ PostsRouter
         //placeid , user_id
         newPost.user_id = req.user.id
         
+        if (req.file) {
+            const file = dataUri(req).content;
+            return uploader.upload(file).then((result) => {
+                const image = result.url;
+                newPost.image = image
 
-        return PostService.addPost (db, newPost)
-            .then(post => {
-                return res
-                    .status(201)
-                    .location(path.posix.join(req.originalUrl, `/${post.id}`))
-                    .json(PostService.serializePost(post))
+                return PostService.addPost (db, newPost)
+                .then(post => {
+                    console.log('post service post', post)
+                    return res
+                        .status(201)
+                        .location(path.posix.join(req.originalUrl, `/${post.id}`))
+                        .json(PostService.serializePost(post))
+                })
+                .catch(next)
+
             })
+            .catch(next)
+        } else if (!req.file) {
+            return PostService.addPost (db, newPost)
+                .then(post => {
+                    console.log('post service post', post)
+                    return res
+                        .status(201)
+                        .location(path.posix.join(req.originalUrl, `/${post.id}`))
+                        .json(PostService.serializePost(post))
+                })
+                .catch(next)
+        }
+
+        
     })
 
 PostsRouter
@@ -73,6 +115,18 @@ PostsRouter
             .catch(next)
     })
 
+
+PostsRouter
+    .route('/image')
+    // .all(requireAuth)
+    .post(jsonParser, (req,res, next) => {
+        console.log('hi')
+        console.log('req files', req.files)
+        const path = Object.values(Object.values(req.files)[0])[0].path
+
+        cloudinary.uploader.upload(path)
+            .then(image => res.json([image]))
+    })
 
 
 module.exports = PostsRouter
