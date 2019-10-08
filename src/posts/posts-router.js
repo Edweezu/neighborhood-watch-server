@@ -93,6 +93,19 @@ PostsRouter
 PostsRouter
     .route('/:postid')
     .all(requireAuth)
+    .get((req, res, next) => {
+        let { postid } = req.params
+        let db = req.app.get('db')
+
+        return PostService.getById (db, postid)
+            .then(post => {
+                if (!post) {
+                    return res.status(400).send(`Please send a valid post.`)
+                }
+
+                return res.json(PostService.serializePost(post))
+            })
+    })
     .delete((req, res, next) => {
         let { postid } = req.params
         let db = req.app.get('db')
