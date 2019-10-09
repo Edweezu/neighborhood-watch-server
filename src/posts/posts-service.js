@@ -97,6 +97,51 @@ const PostService = {
           .first()
       },
 
+    //   updatePost (db, updatedPost, postid) {
+    //       return db
+    //         .from('posts')
+    //         .select(
+    //             'posts.*',
+    //             db.raw(
+    //                 `json_strip_nulls(
+    //                     json_build_object(
+    //                         'id', users.id,
+    //                         'username', users.username,
+    //                         'first_name', users.first_name,
+    //                         'last_name', users.last_name,
+    //                         'country', users.country,
+    //                         'state', users.state,
+    //                         'city', users.city,
+    //                         'email', users.email
+    //                     )
+    //                 ) AS "user"`
+    //             ) 
+    //         )
+    //         .leftJoin(
+    //             'users',
+    //             'posts.user_id',
+    //             'users.id'
+    //         )
+    //         .where('id', postid)
+    //         .groupBy('posts.id', 'users.id')
+    //         .update(updatedPost)
+    //         .returning('*')
+    //         .then(rows => {
+    //             return rows[0]
+    //         })
+    //   },
+      updatePost (db, updatedPost, postid) {
+          return db
+            .from('posts')
+            .select('*')
+            .where('id', postid)
+            .update(updatedPost)
+            .returning('*')
+            .then(rows => {
+                return rows[0]
+            })
+      },
+
     serializePost (post) {
         return {
             id: post.id,

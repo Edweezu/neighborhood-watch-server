@@ -106,6 +106,66 @@ PostsRouter
                 return res.json(PostService.serializePost(post))
             })
     })
+    .patch(multerUploads, (req, res, next) => {
+        let { postid } = req.params
+
+        console.log('req files', req.file)
+        console.log('req body', req.body)
+        let db = req.app.get('db')
+        let { subject, message, post_category, place_id } = req.body
+
+        let updatedPost = {
+            subject,
+            message,
+            post_category,
+            place_id,
+        }
+
+        console.log('new post', updatedPost)
+
+        for (let item in updatedPost) {
+            if (!updatedPost[item]) {
+                return res.status(400).json(`Please provide a value for ${item}`)
+            }
+        }
+        
+        //placeid , user_id
+        
+        if (req.file) {
+            const file = dataUri(req).content;
+            return uploader.upload(file).then((result) => {
+                const image = result.url;
+                updatedPost.image = image
+
+                return PostService.updatePost (db, updatedPost, postid)
+                .then(post => {
+                    
+                   return PostService.getById(db, postid)
+                    .then(post => {
+                        console.log('returned updated post', post)
+                        return res
+                        .json(PostService.serializePost(post))
+                    })
+                })
+                .catch(next)
+
+            })
+            .catch(next)
+        } else if (!req.file) {
+            updatedPost.image = null
+            return PostService.updatePost (db, updatedPost, postid)
+                .then(post => {
+                    
+                   return PostService.getById(db, postid)
+                    .then(post => {
+                        console.log('returned updated post', post)
+                        return res
+                        .json(PostService.serializePost(post))
+                    })
+                })
+                .catch(next)
+        }
+    })
     .delete((req, res, next) => {
         let { postid } = req.params
         let db = req.app.get('db')
