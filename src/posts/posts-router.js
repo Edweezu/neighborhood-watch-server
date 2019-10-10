@@ -9,7 +9,7 @@ const logger = require('../logger')
 // const cloudinary = require('cloudinary')
 const { multerUploads, dataUri } = require('../middleware/multerUploads')
 const { uploader, cloudinaryConfig } = require('../cloudinaryConfig')
-
+const moment = require('moment')
 
 // cloudinary.config({ 
 //     cloud_name: process.env.CLOUD_NAME, 
@@ -105,6 +105,7 @@ PostsRouter
 
                 return res.json(PostService.serializePost(post))
             })
+            .catch(next)
     })
     .patch(multerUploads, (req, res, next) => {
         let { postid } = req.params
@@ -119,6 +120,7 @@ PostsRouter
             message,
             post_category,
             place_id,
+           
         }
 
         console.log('new post', updatedPost)

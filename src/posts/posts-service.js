@@ -2,6 +2,7 @@ const xss = require('xss')
 
 const PostService = {
     addPost (db, newPost) {
+        console.log('initial post', newPost)
         return db
             .from('posts')
             .insert(newPost)
@@ -10,6 +11,7 @@ const PostService = {
                 return rows[0]
             })
             .then(post => {
+                console.log('service post', post)
                 return PostService.getById(db, post.id)
             })
     },
