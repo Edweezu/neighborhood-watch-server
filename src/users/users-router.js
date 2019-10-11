@@ -122,6 +122,7 @@ UsersRouter
                 updatedUser[item] = req.body[item]
             }
         }
+        console.log('files', req.file)
 
         console.log('updated', updatedUser)
 
@@ -133,11 +134,13 @@ UsersRouter
 
                 return UsersService.updateUser (db, req.user.id, updatedUser)
                     .then(user => {
+                        console.log("initial patch user", user)
                         if (!user) {
                             return res.status(400).send(`Invalid User`)
                         }
                         return UsersService.getUserWithUserName(db, username)
                             .then(updatedUser => {
+                                console.log("updated image patch", user)
                                 return res.json(user)
                             })
                             .catch(next)
