@@ -5,6 +5,8 @@ const jsonParser = express.json()
 const UsersService = require('./users-service')
 const xss = require('xss')
 const requireAuth = require('../middleware/jwt-auth')
+const { multerUploads, dataUri } = require('../middleware/multerUploads')
+const { uploader, cloudinaryConfig } = require('../cloudinaryConfig')
 
 
 UsersRouter
@@ -62,7 +64,7 @@ UsersRouter
             email,
             country,
             state, 
-            cityinput
+            city: cityinput
         }
 
         for (let item in updatedUser) {
@@ -87,6 +89,77 @@ UsersRouter
 
     })
 
+UsersRouter
+    .route('/profile')
+    .all(requireAuth)
+    .get((req, res, next) => {
+
+        let { username } = req.user
+        let db = req.app.get('db')
+
+        console.log('initial user', req.user)
+
+        return UsersService.getUserWithUserName (db, username)
+            .then(user => {
+                console.log('retrieved user', user)
+                if (!user) {
+                    return res.status(400).send(`Please provide a valid username`)
+                }
+
+                return res.json(user)
+            })
+    })
+    .patch(multerUploads, (req, res, next) => {
+        let { username } = req.user
+        let db = req.app.get('db')
+
+        let { city, country, email, first_name, interests, last_name, occupation, state } = req.body
+
+        let updatedUser = {}
+
+        for (let item in req.body) {
+            if (req.body[item]) {
+                updatedUser[item] = req.body[item]
+            }
+        }
+
+        console.log('updated', updatedUser)
+
+        if (req.file) {
+            const file = dataUri(req).content;
+            return uploader.upload(file).then((result) => {
+                const image = result.url;
+                updatedUser.image = image
+
+                return UsersService.updateUser (db, req.user.id, updatedUser)
+                    .then(user => {
+                        if (!user) {
+                            return res.status(400).send(`Invalid User`)
+                        }
+                        return UsersService.getUserWithUserName(db, username)
+                            .then(updatedUser => {
+                                return res.json(user)
+                            })
+                            .catch(next)
+                    })
+                    .catch(next)
+                })
+        } else if (!req.file) {
+            updatedUser.image = null
+            return UsersService.updateUser (db, req.user.id, updatedUser)
+            .then(user => {
+                if (!user) {
+                    return res.status(400).send(`Invalid User`)
+                }
+                return UsersService.getUserWithUserName(db, username)
+                    .then(updatedUser => {
+                        return res.json(user)
+                    })
+                    .catch(next)
+            })
+            .catch(next)
+        }      
+    })
 
 
 UsersRouter

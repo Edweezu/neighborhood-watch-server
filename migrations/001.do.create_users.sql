@@ -8,5 +8,7 @@ CREATE TABLE users (
     state TEXT,
     city TEXT,
     email TEXT,
-    occupation TEXT
+    occupation TEXT,
+    interests TEXT,
+    image TEXT
 );
