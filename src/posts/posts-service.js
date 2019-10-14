@@ -164,7 +164,8 @@ const PostService = {
                 city: xss(post.user.city),
                 email: xss(post.user.email)
             },
-            number_of_comments: post.number_of_comments
+            number_of_comments: post.number_of_comments,
+            user_logged_in: post.logged_user
         }
     }
 }

@@ -103,6 +103,9 @@ PostsRouter
                     return res.status(400).send(`Please send a valid post.`)
                 }
 
+                post.logged_user = req.user.id
+                console.log('post', post)
+
                 return res.json(PostService.serializePost(post))
             })
             .catch(next)
