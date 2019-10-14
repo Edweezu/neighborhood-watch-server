@@ -10,6 +10,25 @@ const { uploader, cloudinaryConfig } = require('../cloudinaryConfig')
 
 
 UsersRouter
+    .route('/')
+    .all(requireAuth)
+    .get((req, res, next) => {
+        let db = req.app.get('db')
+
+        return UsersService.getAllUsers(db)
+            .then(users => {
+                console.log('response users', users)
+                return res.json(users.map(user => {
+                    return (UsersService.serializeGetAllUser(user))
+                }))
+            })
+            .catch(next)
+
+    })
+
+
+
+UsersRouter
     .route('/login')
     .post(jsonParser, (req, res, next) => {
         const { username, password } = req.body
@@ -113,12 +132,12 @@ UsersRouter
         let { username } = req.user
         let db = req.app.get('db')
 
-        let { city, country, email, first_name, interests, last_name, occupation, state } = req.body
+        let { city, country, email, first_name, interests, last_name, occupation, state, make_private } = req.body
 
         let updatedUser = {}
 
         for (let item in req.body) {
-            if (req.body[item]) {
+            if (req.body[item] !== null && req.body[item] !== '') {
                 updatedUser[item] = req.body[item]
             }
         }

@@ -12,6 +12,12 @@ const UsersService = {
           .first()
     },
 
+    getAllUsers (db) {
+        return db
+            .select('*')
+            .from('users')
+    },
+
     comparePasswords(password, hash) {
         return bcrypt.compare(password, hash)
     },    
@@ -74,6 +80,23 @@ const UsersService = {
         return {
             id: user.id,
             username: xss(user.username)
+        }
+    },
+
+    serializeGetAllUser (user) {
+        return {
+            id: user.id,
+            username: xss(user.username),
+            first_name: xss(user.first_name),
+            last_name: xss(user.last_name),
+            country: xss(user.country),
+            state: xss(user.state),
+            city: xss(user.city),
+            email: xss(user.email),
+            occupation: xss(user.occupation),
+            interests: xss(user.interests),
+            image: xss(user.image),
+            make_private: user.make_private
         }
     },
 

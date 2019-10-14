@@ -10,5 +10,6 @@ CREATE TABLE users (
     email TEXT,
     occupation TEXT,
     interests TEXT,
-    image TEXT
+    image TEXT,
+    make_private BOOLEAN DEFAULT FALSE
 );

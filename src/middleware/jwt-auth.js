@@ -6,6 +6,7 @@ function requireAuth (req, res, next) {
 
     let bearerToken;
     if (!authToken.toLowerCase().startsWith('bearer ')) {
+        
         return res.status(401).json({
             error: 'Missing bearer token'
         })
