@@ -88,14 +88,23 @@ const PostService = {
                         'email', users.email
                     )
                 ) AS "user"`
-            )
+            ),
+            db.raw(
+                `count(DISTINCT comments) AS number_of_comments`
+            )           
           )
           .leftJoin(
             'users',
             'posts.user_id',
             'users.id',
           )
+          .leftJoin(
+            'comments',
+            'posts.id',
+            'comments.post_id'
+          )
           .where('posts.id', id)
+          .groupBy('posts.id', 'users.id')
           .first()
       },
 
@@ -165,7 +174,8 @@ const PostService = {
                 email: xss(post.user.email)
             },
             number_of_comments: post.number_of_comments,
-            user_logged_in: post.logged_user
+            user_logged_in: post.logged_user,
+            likes: post.likes
         }
     }
 }

@@ -27,6 +27,7 @@ PostsRouter
         return PostService.getAllPosts(db)
             .then(posts => {
                 return res.json(posts.map(post => {
+                    post.logged_user = req.user.id
                     return PostService.serializePost(post)
                 }))
             })
@@ -116,23 +117,31 @@ PostsRouter
         console.log('req files', req.file)
         console.log('req body', req.body)
         let db = req.app.get('db')
-        let { subject, message, post_category, place_id } = req.body
+        let { subject, message, post_category, place_id, likes } = req.body
 
-        let updatedPost = {
-            subject,
-            message,
-            post_category,
-            place_id,
+        // let updatedPost = {
+        //     subject,
+        //     message,
+        //     post_category,
+        //     place_id,
            
+        // }
+
+        let updatedPost = {}
+
+        for (let item in req.body) {
+            if (req.body[item] !== null && req.body[item] !== '') {
+                updatedPost[item] = req.body[item]
+            }
         }
 
         console.log('new post', updatedPost)
 
-        for (let item in updatedPost) {
-            if (!updatedPost[item]) {
-                return res.status(400).json(`Please provide a value for ${item}`)
-            }
-        }
+        // for (let item in updatedPost) {
+        //     if (!updatedPost[item]) {
+        //         return res.status(400).json(`Please provide a value for ${item}`)
+        //     }
+        // }
         
         //placeid , user_id
         
