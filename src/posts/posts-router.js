@@ -105,7 +105,7 @@ PostsRouter
                 }
 
                 post.logged_user = req.user.id
-                console.log('post', post)
+                // console.log('post', post)
 
                 return res.json(PostService.serializePost(post))
             })
@@ -135,7 +135,7 @@ PostsRouter
             }
         }
 
-        console.log('new post', updatedPost)
+        // console.log('new post', updatedPost)
 
         // for (let item in updatedPost) {
         //     if (!updatedPost[item]) {
@@ -156,7 +156,7 @@ PostsRouter
                     
                    return PostService.getById(db, postid)
                     .then(post => {
-                        console.log('returned updated post', post)
+                        // console.log('returned updated post', post)
                         return res
                         .json(PostService.serializePost(post))
                     })
@@ -172,7 +172,7 @@ PostsRouter
                     
                    return PostService.getById(db, postid)
                     .then(post => {
-                        console.log('returned updated post', post)
+                        // console.log('returned updated post', post)
                         return res
                         .json(PostService.serializePost(post))
                     })
@@ -202,12 +202,67 @@ PostsRouter
             .catch(next)
     })
 
+PostsRouter
+    .route('/:postid/likes')
+    .all(requireAuth)
+    .get((req, res, next) => {
+        let { postid } = req.params
+        let db = req.app.get('db')
+
+        console.log('postid', postid)
+
+        return PostService.getAllLikes(db, postid)
+            .then(list => {
+                console.log('returned list', list)
+                return res.json(list)
+            })
+    })
+    .post((req, res, next) => {
+        let db = req.app.get('db')
+        let { postid } = req.params
+
+        let newLike = {
+            post_id: postid,
+            user_id: req.user.id
+        }
+
+        console.log('new intial like', newLike)
+
+        return PostService.checkUserLikes(db, postid, req.user.id)
+            .then(user => {
+                console.log('user', user)
+                if (user.length) {
+                    return res.status(400).send(`User already liked`)
+                }
+                return PostService.postUserLike(db, newLike)
+                    .then(newLike => {
+                        console.log('new like', newLike)
+                        return PostService.getAllLikes(db, postid)
+                            .then(list => {
+                                return res.json(list)
+                            })
+                    })
+            })
+    })
+    .delete((req, res, next) => {
+        let db = req.app.get('db')
+        let { postid } = req.params
+
+        return PostService.deleteUserLike(db, postid, req.user.id)
+            .then(data => {
+                return PostService.getAllLikes(db, postid)
+                    .then(list => {
+                        return res.json(list)
+                    })
+            })
+    })
+
 
 PostsRouter
     .route('/image')
     // .all(requireAuth)
     .post(jsonParser, (req,res, next) => {
-        console.log('hi')
+      
         console.log('req files', req.files)
         const path = Object.values(Object.values(req.files)[0])[0].path
 

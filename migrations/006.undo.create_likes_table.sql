@@ -1,0 +1,7 @@
+ALTER TABLE IF EXISTS likes
+    DROP COLUMN user_id;
+
+ALTER TABLE IF EXISTS likes
+    DROP COLUMN post_id;
+
+DROP TABLE IF EXISTS likes;
