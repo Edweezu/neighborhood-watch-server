@@ -212,9 +212,10 @@ describe('Users Endpoints', function() {
         password: testUser.password,
       }
       const expectedToken = jwt.sign(
-        { user_id: testUser.id, sub: testUser.username },
+        { user_id: testUser.id },
         process.env.JWT_SECRET,
         {
+          subject: testUser.username,
           expiresIn: process.env.JWT_EXPIRY,
           algorithm: 'HS256',
         }

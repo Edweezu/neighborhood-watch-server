@@ -64,11 +64,11 @@ UsersRouter
                             error: 'Incorrect username or password',
                           })
                     }
-
-                    const payload = { user_id: dbUser.id, sub: dbUser.username}
+                    const sub = dbUser.username
+                    const payload = { user_id: dbUser.id }
 
                     res.send({
-                        authToken: UsersService.createJwt(payload)
+                        authToken: UsersService.createJwt(sub, payload)
                     })
                 })
         })
