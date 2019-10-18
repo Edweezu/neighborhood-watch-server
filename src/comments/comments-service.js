@@ -75,7 +75,8 @@ const CommentsService = {
                 state: xss(comment.user.state),
                 city: xss(comment.user.city),
                 email: xss(comment.user.email)
-            }
+            },
+            user_logged_in: comment.user_logged_in
         }
     },
 

@@ -33,16 +33,18 @@ UsersRouter
     .post(jsonParser, (req, res, next) => {
         const { username, password } = req.body
         const loginUser = {
-            username: username.toLowerCase(),
+            username: username,
             password: password
         }
 
         const db = req.app.get('db')
         for (let key in loginUser) {
             if (!loginUser[key]) {
-                return res.status(400).json(`Missing ${key} in request body`)
+                return res.status(400).json({error: `Missing '${key}' in request body`})
             }
         }
+
+        loginUser.username = loginUser.username.toLowerCase()
 
         UsersService.getUserWithUserName(
             db,
@@ -50,13 +52,17 @@ UsersRouter
         )
         .then(dbUser => {
             if (!dbUser ) {
-                return res.status(400).json(`Incorrect user_name or password`)
+                return res.status(400).json({
+                    error: 'Incorrect username or password',
+                  })
             }
 
             return UsersService.comparePasswords (loginUser.password, dbUser.password)
                 .then(compareMatch => {
                     if (!compareMatch) {
-                        return res.status(400).json(`Incorrect username or password`)
+                        return res.status(400).json({
+                            error: 'Incorrect username or password',
+                          })
                     }
 
                     const payload = { user_id: dbUser.id, sub: dbUser.username}
@@ -191,9 +197,11 @@ UsersRouter
         const db = req.app.get('db')
 
         //check if all fields are filled
-        for (let field in req.body) {
+        for (const field of ['username', 'password']) {
             if (!req.body[field]) {
-                return res.status(400).json(`Please fill in the field ${field}`)
+                return res.status(400).json({
+                    error: `Missing '${field}' in request body`
+                  })
             }
         }
 
@@ -201,7 +209,7 @@ UsersRouter
         let passwordError = UsersService.validatePassword(password)
 
         if (passwordError ) {
-            return res.status(400).json(passwordError)
+            return res.status(400).json({ error: passwordError })
         }
 
        
@@ -210,7 +218,7 @@ UsersRouter
        UsersService.checkIfUserExists (username, db)
             .then(user => {
                 if (user) {
-                    return res.status(400).json(`That username already exists. Please provide another. `)
+                    return res.status(400).json({ error: `Username already taken` })
                 }
                 //if not, hash their password
                 return UsersService.hashPassword (password)

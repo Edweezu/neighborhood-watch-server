@@ -55,6 +55,7 @@ CommentsRouter
         
         return CommentsService.getById(db, commentId)
             .then(comment => {
+                comment.user_logged_in = req.user.id
                 if (!comment) {
                     return res.status(400).send(`Please provide a valid comment`)
                 }
