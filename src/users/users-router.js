@@ -11,7 +11,7 @@ const { uploader, cloudinaryConfig } = require('../cloudinaryConfig')
 
 UsersRouter
     .route('/')
-    // .all(requireAuth)
+    .all(requireAuth)
     .get((req, res, next) => {
         let db = req.app.get('db')
         console.log('hi', db)
