@@ -6,16 +6,16 @@ const requireAuth = require('../middleware/jwt-auth')
 const PostService = require('./posts-service')
 const path = require('path')
 const logger = require('../logger')
-// const cloudinary = require('cloudinary')
+const cloudinary = require('cloudinary').v2
 const { multerUploads, dataUri } = require('../middleware/multerUploads')
 const { uploader, cloudinaryConfig } = require('../cloudinaryConfig')
 const moment = require('moment')
 
-// cloudinary.config({ 
-//     cloud_name: process.env.CLOUD_NAME, 
-//     api_key: process.env.API_KEY, 
-//     api_secret: process.env.API_SECRET
-// })
+cloudinary.config({ 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY, 
+    api_secret: process.env.API_SECRET
+})
 
 
 PostsRouter
@@ -64,7 +64,7 @@ PostsRouter
         if (req.file) {
             const file = dataUri(req).content;
             // console.log('file', file)
-            return uploader.upload(file).then((result) => {
+            return cloudinary.uploader.upload(file).then((result) => {
                 console.log('cloudinary result', result)
                 const image = result.url;
                 newPost.image = image
