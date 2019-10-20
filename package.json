@@ -16,6 +16,9 @@
   "engines": {
     "node": "10.14.0"
   },
+  "resolutions": {
+    "https-proxy-agent": "^3.0.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -45,6 +48,7 @@
     "chai": "^4.2.0",
     "mocha": "^6.1.4",
     "nodemon": "^1.19.0",
+    "npm-force-resolutions": "0.0.2",
     "supertest": "^4.0.2"
   }
 }
