@@ -14,7 +14,6 @@ UsersRouter
     .all(requireAuth)
     .get((req, res, next) => {
         let db = req.app.get('db')
-        console.log('hi', db)
         return UsersService.getAllUsers(db)
             .then(users => {
                 console.log('response users', users)
