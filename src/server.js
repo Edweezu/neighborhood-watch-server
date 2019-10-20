@@ -8,12 +8,6 @@ const moment = require('moment-timezone')
 let db = knex({
     client: 'pg',
     connection: DB_URL
-    // connection : {
-    //     host: 'localhost',
-    //     user: 'dunder-mifflin',
-    //     database: 'neighborhood-db',
-    //     timezone: 'utc'
-    // }
 })
 
 // moment.tz.setDefault("America/Los_Angeles")
