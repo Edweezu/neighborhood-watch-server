@@ -154,6 +154,7 @@ UsersRouter
         if (req.file) {
             const file = dataUri(req).content;
             return uploader.upload(file).then((result) => {
+                console.log('cloudinary result', result)
                 const image = result.url;
                 updatedUser.image = image
 
