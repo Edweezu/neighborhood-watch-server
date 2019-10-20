@@ -31,6 +31,10 @@ app.get('/', (req, res) => {
     res.send('Hello world!')
 })
 
+app.get('/test', (req, res) => {
+    res.send('Hello world2!')
+})
+
 app.use('/api/users', UsersRouter)
 app.use('/api/posts', PostsRouter)
 app.use('/api/places', PlacesRouter)
