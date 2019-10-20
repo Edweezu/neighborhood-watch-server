@@ -249,10 +249,10 @@ UsersRouter
 UsersRouter
     .route('/refresh')
     .post(requireAuth, (req, res,) => {
-        // const sub = req.user.username
-        const payload = { user_id: req.user.id, sub: req.user.username }
+        const sub = req.user.username
+        const payload = { user_id: req.user.id }
         res.send({
-            authToken: UsersService.createJwt(payload),
+            authToken: UsersService.createJwt(sub, payload),
         })
     })
 
