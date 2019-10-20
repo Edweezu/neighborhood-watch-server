@@ -55,18 +55,24 @@ PostsRouter
             }
         }
 
+        console.log('req files', req.file)
+        console.log('req body', req.body)
+
         //placeid , user_id
         newPost.user_id = req.user.id
         
         if (req.file) {
             const file = dataUri(req).content;
+            console.log('file', file)
             return uploader.upload(file).then((result) => {
+                console.log('cloudinary result', result)
                 const image = result.url;
                 newPost.image = image
 
                 return PostService.addPost (db, newPost)
                 .then(post => {
                     console.log('post service post', post)
+                    post.logged_user = req.user.id
                     return res
                         .status(201)
                         .location(path.posix.join(req.originalUrl, `/${post.id}`))
@@ -80,6 +86,7 @@ PostsRouter
             return PostService.addPost (db, newPost)
                 .then(post => {
                     console.log('post service post', post)
+                    post.logged_user = req.user.id
                     return res
                         .status(201)
                         .location(path.posix.join(req.originalUrl, `/${post.id}`))
@@ -156,6 +163,7 @@ PostsRouter
                     
                    return PostService.getById(db, postid)
                     .then(post => {
+                        post.logged_user = req.user.id
                         // console.log('returned updated post', post)
                         return res
                         .json(PostService.serializePost(post))
@@ -173,6 +181,7 @@ PostsRouter
                    return PostService.getById(db, postid)
                     .then(post => {
                         // console.log('returned updated post', post)
+                        post.logged_user = req.user.id
                         return res
                         .json(PostService.serializePost(post))
                     })
