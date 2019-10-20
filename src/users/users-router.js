@@ -103,10 +103,11 @@ UsersRouter
             .then(user => {
                 // return res.status(204).end()
                 // return res.status(200).json(user)
-                    const payload = { user_id: user.id, sub: user.username}
+                    const sub = user.username
+                    const payload = { user_id: user.id }
 
                     res.send({
-                        authToken: UsersService.createJwt(payload)
+                        authToken: UsersService.createJwt(sub, payload)
                     })
             })
             .catch(next)
