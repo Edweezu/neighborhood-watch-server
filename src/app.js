@@ -22,9 +22,9 @@ app.use(morgan(morganOption))
 app.use(cors())
 // app.options('*', cors());
 app.use(helmet({hidePoweredBy: {setTo: 'bye'}}));
-// app.use(urlencoded({ extended: false }));
-// app.use(json());
-// app.use(cloudinaryConfig)
+app.use(urlencoded({ extended: false }));
+app.use(json());
+app.use(cloudinaryConfig)
 // app.use(formData.parse())
 
 app.get('/', (req, res) => {
