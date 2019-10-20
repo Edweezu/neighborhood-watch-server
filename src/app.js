@@ -24,7 +24,7 @@ app.options('*', cors());
 app.use(helmet({hidePoweredBy: {setTo: 'bye'}}));
 app.use(urlencoded({ extended: false }));
 app.use(json());
-app.use(cloudinaryConfig)
+// app.use(cloudinaryConfig)
 // app.use(formData.parse())
 
 app.get('/', (req, res) => {
