@@ -63,7 +63,7 @@ PostsRouter
         
         if (req.file) {
             const file = dataUri(req).content;
-            console.log('file', file)
+            // console.log('file', file)
             return uploader.upload(file).then((result) => {
                 console.log('cloudinary result', result)
                 const image = result.url;
@@ -110,7 +110,7 @@ PostsRouter
                 if (!post) {
                     return res.status(400).send(`Please send a valid post.`)
                 }
-
+                //need to set logged_user as the current user for every serialize post function
                 post.logged_user = req.user.id
                 // console.log('post', post)
 
