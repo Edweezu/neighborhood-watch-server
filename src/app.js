@@ -20,10 +20,10 @@ const morganOption = process.env.NODE_ENV === 'production' ? 'tiny' : 'common'
 
 app.use(morgan(morganOption))
 app.use(cors())
-app.options('*', cors());
+// app.options('*', cors());
 app.use(helmet({hidePoweredBy: {setTo: 'bye'}}));
-app.use(urlencoded({ extended: false }));
-app.use(json());
+// app.use(urlencoded({ extended: false }));
+// app.use(json());
 // app.use(cloudinaryConfig)
 // app.use(formData.parse())
 
