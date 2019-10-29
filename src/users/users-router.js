@@ -174,7 +174,7 @@ UsersRouter
                     .catch(next)
                 })
         } else if (!req.file) {
-            updatedUser.image = null
+            // updatedUser.image = null
             return UsersService.updateUser (db, req.user.id, updatedUser)
             .then(user => {
                 if (!user) {
