@@ -1,5 +1,3 @@
-// import { config, uploader } from 'cloudinary';
-// import dotenv from 'dotenv';
 const { config, uploader } = require('cloudinary')
 require('dotenv').config()
 
@@ -13,7 +11,6 @@ const cloudinaryConfig = (req, res, next) => {
   next();
 }
 
-// export { cloudinaryConfig, uploader };
 module.exports = {
     cloudinaryConfig,
     uploader

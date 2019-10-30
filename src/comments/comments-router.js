@@ -34,16 +34,13 @@ CommentsRouter
         }
 
         newComment.user_id = req.user.id
-        console.log('new comment', newComment)
         return CommentsService.postNewComment(db, newComment)
             .then(comment => {
-                console.log('returned comment', comment)
                 return res
                     .status(201)
                     .location(path.posix.join(req.originalUrl, `${comment.id}`))
                     .json(CommentsService.serializeComment(comment))
             })
-
     })
 
 CommentsRouter
@@ -78,8 +75,7 @@ CommentsRouter
         }
 
         return CommentsService.updateComment(db, newComment, commentId)
-            .then(comment => {
-                
+            .then(comment => {   
                 return CommentsService.getById(db, commentId)
                     .then(updatedComment => {
                         return res.json(CommentsService.serializeComment(updatedComment))
@@ -106,7 +102,5 @@ CommentsRouter
             })
             .catch(next)
     })
-
-
 
 module.exports = CommentsRouter

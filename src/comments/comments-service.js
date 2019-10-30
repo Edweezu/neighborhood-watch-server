@@ -63,7 +63,6 @@ const CommentsService = {
             id: comment.id,
             text: xss(comment.text),
             date_created: xss(comment.date_created),
-            // date_created: comment.date_created,
             user_id: comment.user_id,
             post_id: comment.post_id,
             user: {
@@ -99,7 +98,6 @@ const CommentsService = {
     },
 
     postNewComment (db, newComment) {
-        console.log('intial comment', newComment)
         return db
             .from('comments')
             .insert(newComment)
@@ -108,8 +106,6 @@ const CommentsService = {
                 return rows[0]
             })
             .then(comment => {
-                console.log('service comment', comment)
-                //tricky
                 return CommentsService.getById(db, comment.id)
             })
     }

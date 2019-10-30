@@ -19,7 +19,6 @@ const PlacesService = {
                 state: body.state,
                 city: body.city
             })
-
     },
 
     serializeNewPlace (place) {

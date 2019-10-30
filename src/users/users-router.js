@@ -16,13 +16,11 @@ UsersRouter
         let db = req.app.get('db')
         return UsersService.getAllUsers(db)
             .then(users => {
-                console.log('response users', users)
                 return res.json(users.map(user => {
                     return (UsersService.serializeGetAllUser(user))
                 }))
             })
             .catch(next)
-
     })
 
 
@@ -101,8 +99,6 @@ UsersRouter
 
         return UsersService.updateUser(db, userid, updatedUser)
             .then(user => {
-                // return res.status(204).end()
-                // return res.status(200).json(user)
                     const sub = user.username
                     const payload = { user_id: user.id }
 
@@ -111,7 +107,6 @@ UsersRouter
                     })
             })
             .catch(next)
-
     })
 
 UsersRouter
@@ -122,11 +117,8 @@ UsersRouter
         let { username } = req.user
         let db = req.app.get('db')
 
-        console.log('initial user', req.user)
-
         return UsersService.getUserWithUserName (db, username)
             .then(user => {
-                console.log('retrieved user', user)
                 if (!user) {
                     return res.status(400).send(`Please provide a valid username`)
                 }
@@ -147,26 +139,20 @@ UsersRouter
                 updatedUser[item] = req.body[item]
             }
         }
-        console.log('files', req.file)
-
-        console.log('updated', updatedUser)
 
         if (req.file) {
             const file = dataUri(req).content;
             return uploader.upload(file).then((result) => {
-                console.log('cloudinary result', result)
                 const image = result.url;
                 updatedUser.image = image
 
                 return UsersService.updateUser (db, req.user.id, updatedUser)
                     .then(user => {
-                        console.log("initial patch user", user)
                         if (!user) {
                             return res.status(400).send(`Invalid User`)
                         }
                         return UsersService.getUserWithUserName(db, username)
                             .then(updatedUser => {
-                                console.log("updated image patch", user)
                                 return res.json(user)
                             })
                             .catch(next)
@@ -174,7 +160,6 @@ UsersRouter
                     .catch(next)
                 })
         } else if (!req.file) {
-            // updatedUser.image = null
             return UsersService.updateUser (db, req.user.id, updatedUser)
             .then(user => {
                 if (!user) {
@@ -197,7 +182,6 @@ UsersRouter
         const { username, password } = req.body
         const db = req.app.get('db')
 
-        //check if all fields are filled
         for (const field of ['username', 'password']) {
             if (!req.body[field]) {
                 return res.status(400).json({
@@ -206,36 +190,27 @@ UsersRouter
             }
         }
 
-        //check if password meets requirements - forgot this
         let passwordError = UsersService.validatePassword(password)
 
         if (passwordError ) {
             return res.status(400).json({ error: passwordError })
         }
 
-       
-
-        //check if username is taken already
        UsersService.checkIfUserExists (username, db)
             .then(user => {
                 if (user) {
                     return res.status(400).json({ error: `Username already taken` })
                 }
-                //if not, hash their password
                 return UsersService.hashPassword (password)
                     .then(hashedPassword => {
-                        //insert user + hashpassword into the users db
                         let newUser = {
                             username,
                             password: hashedPassword
                         }
-                        //return res json to the user
                         return UsersService.insertUser (newUser, db)
                             .then(insertedUser => {
-                                console.log('inserted', insertedUser)
                                 res
                                     .status(201)
-                                    //messed up this
                                     .location(path.posix.join(req.originalUrl, `/${insertedUser.id}`))
                                     .json(UsersService.serializeUser(insertedUser))
                             })  

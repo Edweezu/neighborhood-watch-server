@@ -2,7 +2,6 @@ const xss = require('xss')
 
 const PostService = {
     addPost (db, newPost) {
-        console.log('initial post', newPost)
         return db
             .from('posts')
             .insert(newPost)
@@ -11,7 +10,6 @@ const PostService = {
                 return rows[0]
             })
             .then(post => {
-                console.log('service post', post)
                 return PostService.getById(db, post.id)
             })
     },
@@ -20,9 +18,7 @@ const PostService = {
         return db
             .select(
                 'posts.*',
-                //remember to put this in the select clause because you're building a new key called user with an object that has user.id, etc. 
                 db.raw(
-                    //this omits all null values in the object
                     `json_strip_nulls(
                         json_build_object(
                             'id', users.id,
@@ -90,7 +86,6 @@ const PostService = {
             .del()
     },
 
-    //returning is only for update and add methods
     getPostById (db, postid) {
         return db
             .select('*')

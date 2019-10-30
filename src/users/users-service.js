@@ -30,18 +30,14 @@ const UsersService = {
     },
 
     createJwt(sub, payload) {
-        //returns json web token as string
-        //payload = data thats stored inside the JWT
         return jwt.sign(payload, config.JWT_SECRET, {
           subject: sub,
           expiresIn: config.JWT_EXPIRY,
           algorithm: 'HS256',
-          //how the signature should be computed
         })
     },
     
     verifyJwt(token) {
-         //returns payload decoded if correct token, if not throws error
          return jwt.verify(token, config.JWT_SECRET, {
              algorithms: ['HS256']
          })

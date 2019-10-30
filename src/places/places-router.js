@@ -32,10 +32,7 @@ PlacesRouter
                 return res.status(400).json(`Please fill in a value for the field ${item}`)
             }
         }
-
-        console.log('new place', newPlace)
-
-       
+     
         return PlacesService.findPlace(db, newPlace)
             .then(findPlace => {
                 if (!findPlace.length) {
@@ -55,7 +52,6 @@ PlacesRouter
                 })
             })      
     })
-
 
 module.exports = PlacesRouter
 

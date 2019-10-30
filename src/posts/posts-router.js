@@ -33,9 +33,6 @@ PostsRouter
             })
     })
     .post(multerUploads, (req, res, next) => {
-
-        console.log('req files', req.file)
-        console.log('req body', req.body)
         let db = req.app.get('db')
         let { subject, message, post_category, place_id } = req.body
 
@@ -47,31 +44,22 @@ PostsRouter
             place_id
         }
 
-        console.log('new post', newPost)
-
         for (let item in newPost) {
             if (!newPost[item]) {
                 return res.status(400).json(`Please provide a value for ${item}`)
             }
         }
 
-        console.log('req files', req.file)
-        console.log('req body', req.body)
-
-        //placeid , user_id
         newPost.user_id = req.user.id
         
         if (req.file) {
             const file = dataUri(req).content;
-            // console.log('file', file)
             return cloudinary.uploader.upload(file).then((result) => {
-                console.log('cloudinary result', result)
                 const image = result.url;
                 newPost.image = image
 
                 return PostService.addPost (db, newPost)
                 .then(post => {
-                    console.log('post service post', post)
                     post.logged_user = req.user.id
                     return res
                         .status(201)
@@ -85,7 +73,6 @@ PostsRouter
         } else if (!req.file) {
             return PostService.addPost (db, newPost)
                 .then(post => {
-                    console.log('post service post', post)
                     post.logged_user = req.user.id
                     return res
                         .status(201)
@@ -93,9 +80,7 @@ PostsRouter
                         .json(PostService.serializePost(post))
                 })
                 .catch(next)
-        }
-
-        
+        }      
     })
 
 PostsRouter
@@ -112,7 +97,6 @@ PostsRouter
                 }
                 //need to set logged_user as the current user for every serialize post function
                 post.logged_user = req.user.id
-                // console.log('post', post)
 
                 return res.json(PostService.serializePost(post))
             })
@@ -120,19 +104,8 @@ PostsRouter
     })
     .patch(multerUploads, (req, res, next) => {
         let { postid } = req.params
-
-        console.log('req files', req.file)
-        console.log('req body', req.body)
         let db = req.app.get('db')
         let { subject, message, post_category, place_id, likes } = req.body
-
-        // let updatedPost = {
-        //     subject,
-        //     message,
-        //     post_category,
-        //     place_id,
-           
-        // }
 
         let updatedPost = {}
 
@@ -141,16 +114,6 @@ PostsRouter
                 updatedPost[item] = req.body[item]
             }
         }
-
-        // console.log('new post', updatedPost)
-
-        // for (let item in updatedPost) {
-        //     if (!updatedPost[item]) {
-        //         return res.status(400).json(`Please provide a value for ${item}`)
-        //     }
-        // }
-        
-        //placeid , user_id
         
         if (req.file) {
             const file = dataUri(req).content;
@@ -164,23 +127,20 @@ PostsRouter
                    return PostService.getById(db, postid)
                     .then(post => {
                         post.logged_user = req.user.id
-                        // console.log('returned updated post', post)
                         return res
                         .json(PostService.serializePost(post))
                     })
                 })
                 .catch(next)
-
             })
             .catch(next)
+
         } else if (!req.file) {
             updatedPost.image = null
             return PostService.updatePost (db, updatedPost, postid)
                 .then(post => {
-                    
                    return PostService.getById(db, postid)
                     .then(post => {
-                        // console.log('returned updated post', post)
                         post.logged_user = req.user.id
                         return res
                         .json(PostService.serializePost(post))
@@ -193,10 +153,8 @@ PostsRouter
         let { postid } = req.params
         let db = req.app.get('db')
 
-        //remember to get postById first in here and chain promises. 
         return PostService.getPostById (db, postid)
             .then(post => {
-
                 if (!post) {
                     return res.status(400).send(`Please provide a valid post`)
                 }
@@ -218,11 +176,8 @@ PostsRouter
         let { postid } = req.params
         let db = req.app.get('db')
 
-        console.log('postid', postid)
-
         return PostService.getAllLikes(db, postid)
             .then(list => {
-                console.log('returned list', list)
                 return res.json(list)
             })
     })
@@ -235,17 +190,13 @@ PostsRouter
             user_id: req.user.id
         }
 
-        console.log('new intial like', newLike)
-
         return PostService.checkUserLikes(db, postid, req.user.id)
             .then(user => {
-                console.log('user', user)
                 if (user.length) {
                     return res.status(400).send(`User already liked`)
                 }
                 return PostService.postUserLike(db, newLike)
                     .then(newLike => {
-                        console.log('new like', newLike)
                         return PostService.getAllLikes(db, postid)
                             .then(list => {
                                 return res.json(list)
@@ -269,10 +220,8 @@ PostsRouter
 
 PostsRouter
     .route('/image')
-    // .all(requireAuth)
     .post(jsonParser, (req,res, next) => {
       
-        console.log('req files', req.files)
         const path = Object.values(Object.values(req.files)[0])[0].path
 
         cloudinary.uploader.upload(path)
