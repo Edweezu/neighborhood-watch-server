@@ -1,27 +1,46 @@
-#Express Boilerplate!
+# Neighborhood Watch
 
-This is a boilerplate project used for starting new projects!
+Neighborhood Watch is a social community app that allows users to stay informed about what's going on in their city or other cities that they might be interested in. Users can search for upcoming events, stay on their toes about the latest local crime, or browse through our extensive Lost and Found section. Users can also connect with their fellow neighbors who choose to leave their profile on public and possibly make lifelong friendships.
 
-## Set up
+## Demo
 
-Complete the following steps to start a new project (NEW-PROJECT-NAME):
+- Live Preview can be found at : https://neighborhood-watch-client.now.sh/
 
-1. Clone this repository to your local machine `git clone BOILERPLATE-URL NEW-PROJECTS-NAME`
-2. `cd` into the cloned repository
-3. Make a fresh start of the git history for this project with `rm -rf .git && git init`
-4. Install the node dependencies `npm install`
-5. Move the example Environment file to `.env` that will be ignored by git and read by the express server `mv example.env .env`
-6. Edit the contents of the `package.json` to use NEW-PROJECT-NAME instead of `"name": "express-boilerplate",`
 
-## Scripts
+## Client Side Github Repo
 
-Start the application `npm start`
+- https://github.com/Edweezu/neighborhood-watch-client
 
-Start nodemon for the application `npm run dev`
 
-Run the tests `npm test`
+## Screenshots
 
-## Deploying
+|  Landing Page  | Create Account | Create Profile |  Login |  
+| -- | -- | -- | -- | 
+| <img src="./readme-images/landing-page.png" alt="landing-page" width="600"/> | <img src="./readme-images/create-account.png" alt="create-account" width="600"/> |  <img src="./readme-images/create-profile.png" alt="create-profile" width="600" /> |  <img src="./readme-images/login.png" alt="login" width="600" />
 
-When your new project is ready for deployment, add a new Heroku application with `heroku create`. This will make a new git remote called "heroku" and you can then `npm run deploy` which will push to this remote's master branch.
+
+|  Main Dashboard  |  Post Page  |  User Profile  | Member Profiles | 
+| -- | -- | -- | -- |
+| <img src="./readme-images/dashboard.png" alt="dashboard" width="600"/> | <img src="./readme-images/post-page.png" alt="post-page" width="600"/> | <img src="./readme-images/profile-page.png" alt="user-profile" width="600"/> | <img src="./readme-images/member-profiles.png" alt="member-profiles" width="600"/>
+
+
+## Technologies Used
+  - Javascript
+  - CSS3
+  - React
+  - Node
+  - Express
+  - PostgreSQL
+  - Mocha
+  - Chai
+  - Heroku
+  - Geocities API
+  
+
+
+## Development RoadMap (v2)
+ - Implementing a Post Image Modal that expands a post image on click
+ - Ability to filter for a collection of posts depending on the search term
+ - Expanding the User's Profile Page by adding in sections for a user's posts and comments
+ - Adding a user image to go along with each post and comment 
 
