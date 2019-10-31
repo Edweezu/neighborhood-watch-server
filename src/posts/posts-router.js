@@ -123,7 +123,6 @@ PostsRouter
 
                 return PostService.updatePost (db, updatedPost, postid)
                 .then(post => {
-                    
                    return PostService.getById(db, postid)
                     .then(post => {
                         post.logged_user = req.user.id
@@ -136,7 +135,6 @@ PostsRouter
             .catch(next)
 
         } else if (!req.file) {
-            updatedPost.image = null
             return PostService.updatePost (db, updatedPost, postid)
                 .then(post => {
                    return PostService.getById(db, postid)
