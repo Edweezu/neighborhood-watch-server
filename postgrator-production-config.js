@@ -8,7 +8,5 @@ module.exports = {
     "database": process.env.PROD_MIGRATIONS_DB_NAME,
     "username": process.env.PROD_MIGRATIONS_DB_USER,
     "password": process.env.PROD_MIGRATIONS_DB_PASS,
-    "ssl": true,
-    "validateChecksums": true,
-    "newline": 'CRLF'
+    "ssl": true
 }

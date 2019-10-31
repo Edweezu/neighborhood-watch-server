@@ -114,6 +114,7 @@ PostsRouter
                 updatedPost[item] = req.body[item]
             }
         }
+
         
         if (req.file) {
             const file = dataUri(req).content;

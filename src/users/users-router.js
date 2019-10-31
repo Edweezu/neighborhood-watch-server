@@ -140,7 +140,14 @@ UsersRouter
             }
         }
 
-        if (req.file) {
+        if (updatedUser.hasOwnProperty('nothing')) {
+            return UsersService.getUserWithUserName(db, username)
+                .then(updatedUser => {
+                    return res.json(updatedUser)
+                })
+                .catch(next)
+            
+        } else if (req.file) {
             const file = dataUri(req).content;
             return uploader.upload(file).then((result) => {
                 const image = result.url;

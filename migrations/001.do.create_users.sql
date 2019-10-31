@@ -12,5 +12,4 @@ CREATE TABLE users (
     interests TEXT,
     image TEXT,
     make_private BOOLEAN DEFAULT FALSE,
-    nothing TEXT,
 );
