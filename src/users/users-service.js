@@ -93,7 +93,8 @@ const UsersService = {
             occupation: xss(user.occupation),
             interests: xss(user.interests),
             image: xss(user.image),
-            make_private: user.make_private
+            make_private: user.make_private,
+            nothing: xss(user.nothing)
         }
     },
 

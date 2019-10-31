@@ -130,7 +130,7 @@ UsersRouter
         let { username } = req.user
         let db = req.app.get('db')
 
-        let { city, country, email, first_name, interests, last_name, occupation, state, make_private } = req.body
+        let { city, country, email, first_name, interests, last_name, occupation, state, make_private, nothing } = req.body
 
         let updatedUser = {}
 
