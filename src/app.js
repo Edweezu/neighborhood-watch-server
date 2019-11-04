@@ -29,22 +29,11 @@ app.get('/', (req, res) => {
     res.send('Hello world!')
 })
 
-
 app.use('/api/users', UsersRouter)
 app.use('/api/posts', PostsRouter)
 app.use('/api/places', PlacesRouter)
 app.use('/api/comments', CommentsRouter)
 
-if (process.env.NODE_ENV === 'production') {
-    app.use('/api/posts', express.static("build"))
-    app.use('/api/users', express.static("build"))
-    app.use('/api/places', express.static("build"))
-    app.use('/api/comments', express.static("build"))
-
-    app.get("*", (req, res) => {
-        res.sendfile(path.resolve(__dirname,  "build", "index.html"));
-    });
-}
 
 app.use(ErrorHandler)
 
