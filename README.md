@@ -24,6 +24,10 @@ Neighborhood Watch is a social community app that allows users to stay informed 
 | <img src="./readme-images/dashboard.png" alt="dashboard" width="600"/> | <img src="./readme-images/post-page.png" alt="post-page" width="600"/> | <img src="./readme-images/profile-page.png" alt="user-profile" width="600"/> | <img src="./readme-images/member-profiles.png" alt="member-profiles" width="600"/>
 
 
+## Schema Design
+![Schema](https://github.com/Edweezu/neighborhood-watch-server/blob/master/readme-images/schema.png)
+
+
 ## Technologies Used
   - Javascript
   - CSS3
