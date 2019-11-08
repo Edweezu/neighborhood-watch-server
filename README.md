@@ -47,7 +47,7 @@ Neighborhood Watch is a social community app that allows users to stay informed 
  
 **/api/users/login** 
 - POST
-  - Uses the information provided in the request body to check if the username exists and if the password matches the hashed password in the database. If so, returns a JWT token to send back to the user.
+  - Uses the information provided in the request body to check if the username exists and if the password matches the hashed password in the database. If so, returns a JWT token to send back to the user
   - If any required fields are missing, returns a 400 response
   - If username doesn't exist or password doesn't match, returns a 400 response
   
@@ -61,18 +61,58 @@ Neighborhood Watch is a social community app that allows users to stay informed 
 ### Posts
 **/api/posts** 
 - GET
-  - Returns a 200 response containing all posts located in the database. 
+  - Returns a 200 response containing all posts located in the database and serializing them before sending it back to the client
 - POST
-  - Creates a new post with the information from the request body, saves it to the database, and sends the post back to the client. If the request body contains an image, it first uploads the image onto Cloudinary and attaches a reference url to the database. 
+  - Creates a new post with the information from the request body, saves it to the database, and sends the post back to the client. If the request body contains an image, the image is first uploaded onto Cloudinary. A reference url is then attached onto the new post before saving it in the database
    - If any required fields are missing, returns a 400 response
 
 **/api/posts/:postid**
+- GET
+  - Returns a 200 response with the serialized post with the supplied postid in the request params. 
+  - If post doesn't exist, returns a 400 response
+- PATCH
+  - Updates the specific post with the info provided in the request body. If the request body contains an image, the image is first uploaded onto Cloudinary. A reference url is then attached onto the post to be updated before saving it in the database
+- DELETE
+  - Deletes the desired post according to the supplied postid. Simply returns a 204 response to client.
+  - If no post exists in the database, returns a 400 response
 
-    
- 
+**/api/posts/:postid/likes**
+- GET
+  - Returns a 200 response with an array of objects containing all the users that liked the specific post
+- POST
+  - Creates a new user like for the supplied postid and saves it in the database. Returns an array of objects containing all users that liked the post
+   - If user already liked the post, returns a 400 response
+- DELETE
+  - Deletes the user's like for the specific post. Returns an updated list containing all users that have liked the post.
   
-
-
+### Comments
+**/api/comments** 
+- GET
+  - Returns a 200 response containing all comments located in the database and serializing them before sending it back to the client
+- POST
+  - Creates a new comment with the info provided in the request body and saves it to the database. Returns a 201 response with the comment path and a serialized comment
+   - If any required fields are missing, returns a 400 response
+ 
+**/api/comments/:commentId**  
+- GET
+  - Returns a 200 response containing the serialized comment that was provided in the request params
+  - If comment doesn't exist in the database, returns a 400 response
+- PATCH
+  - Updates the comment supplied in the request params with the info provided in the request body. Returns a serialized comment back to the client
+   - If any required fields are missing, returns a 400 response
+- DELETE
+  - Deletes the specific comment that was supplied in the request params
+  - If no comment exists in the database, returns a 400 response
+  
+### Places
+**/api/places** 
+- GET
+  - Returns a 200 response containing all places or locations that are currently in the database
+- POST
+  - Creates a new place with the info provided in the request body. Returns a 201 response with the place path as well as the serialized place
+  - If place already exists, returns a JSON object alerting the client that the place has already been created
+  
+  
 ## Technologies Used
   - Javascript
   - CSS3
@@ -85,7 +125,6 @@ Neighborhood Watch is a social community app that allows users to stay informed 
   - Heroku
   - Geocities API
   
-
 
 ## Development RoadMap (v2)
  - Implementing a Post Image Modal that expands a post image on click
